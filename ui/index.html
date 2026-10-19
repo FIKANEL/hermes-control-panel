@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes Agent Control Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="logo-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Hermes Agent <span class="badge-version">v1.0.0</span></div>
+          <div class="brand-sub">Autonomous AI Control Panel • Nous Research</div>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="stat-item">
+          <span class="stat-dot" id="systemDot"></span>
+          <span class="stat-label">System:</span>
+          <span class="stat-value" id="systemStatus">Ready</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">CPU:</span>
+          <span class="stat-value" id="statCpu">--%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">RAM:</span>
+          <span class="stat-value" id="statRam">--</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Env:</span>
+          <span class="stat-value stat-env" id="hermesEnvStatus">Detecting...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Toolbar -->
+    <section class="toolbar">
+      <div class="toolbar-group">
+        <button class="btn btn-start-all" id="btnStartAll" title="Start all main services">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Start All
+        </button>
+        <button class="btn btn-stop-all" id="btnStopAll" title="Stop all services">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+          Stop All
+        </button>
+      </div>
+
+      <div class="toolbar-separator"></div>
+
+      <div class="toolbar-group">
+        <button class="btn btn-secondary" id="btnLaunchShell" title="Open PowerShell with Hermes environment on PATH">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Shell
+        </button>
+        <button class="btn btn-secondary" id="btnLaunchChat" title="Start interactive Hermes Chat CLI">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          CLI Chat
+        </button>
+        <button class="btn btn-secondary" id="btnLaunchTui" title="Launch Fullscreen Hermes TUI">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          TUI
+        </button>
+        <button class="btn btn-yolo" id="btnLaunchYolo" title="Launch Hermes in YOLO Mode (bypass permission prompts)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          YOLO
+        </button>
+      </div>
+
+      <div class="toolbar-separator"></div>
+
+      <div class="toolbar-group toolbar-right">
+        <button class="btn btn-outline" id="btnOpenFolder" title="Open Hermes folders in Windows Explorer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          Explorer
+        </button>
+        <button class="btn btn-outline" id="btnOpenConfig" title="Edit config.yaml and .env API keys">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Config
+        </button>
+        <button class="btn btn-outline" id="btnRefresh" title="Refresh service status">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main Content Area: Module Table & Quick Config -->
+    <main class="main-content">
+      <!-- Left: XAMPP Style Modules Table -->
+      <section class="modules-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Hermes Services & Daemons
+          </div>
+          <div class="card-hint">XAMPP Controller Mode</div>
+        </div>
+
+        <div class="table-scroll-wrap">
+          <table class="modules-table">
+            <thead>
+              <tr>
+                <th style="width: 34%;">Module</th>
+                <th style="width: 15%;">Status</th>
+                <th style="width: 12%;">PID</th>
+                <th style="width: 14%;">Port(s)</th>
+                <th style="width: 25%;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="modulesTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Right: Quick Model & Provider Switcher -->
+      <section class="quick-config-card">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Active Model Profile
+          </div>
+          <button class="btn-save-state btn-sm" id="btnQuickSave" disabled>Save</button>
+        </div>
+
+        <div class="quick-form">
+          <div class="form-row">
+            <label for="quickProvider">LLM Provider</label>
+            <select id="quickProvider" class="input-select">
+              <option value="tokengateway">TokenGateway (tokengateway.ai.id)</option>
+              <option value="openrouter">OpenRouter</option>
+              <option value="nous">Nous Research Portal</option>
+              <option value="openai">OpenAI</option>
+              <option value="anthropic">Anthropic Claude</option>
+              <option value="groq">Groq (Ultra-Fast)</option>
+              <option value="deepseek">DeepSeek</option>
+              <option value="ollama">Ollama (Local :11434)</option>
+              <option value="lmstudio">LM Studio (Local :1234)</option>
+              <option value="custom">Custom Endpoint</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="quickModel">Model Identifier</label>
+            <div class="input-with-presets">
+              <input type="text" id="quickModel" class="input-text" placeholder="e.g. glm-5.3">
+              <select id="presetModels" class="preset-dropdown" aria-label="Select Model Preset">
+                <option value="">Presets...</option>
+                <option value="glm-5.3">glm-5.3 (TokenGateway)</option>
+                <option value="nousresearch/hermes-3-llama-3.1-405b">Hermes 3 (405B)</option>
+                <option value="nousresearch/hermes-3-llama-3.1-70b">Hermes 3 (70B)</option>
+                <option value="nousresearch/hermes-3-llama-3.1-8b">Hermes 3 (8B)</option>
+                <option value="openai/gpt-4o">GPT-4o</option>
+                <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                <option value="deepseek/deepseek-chat">DeepSeek V3</option>
+                <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
+                <option value="llama3.1:8b">Ollama: llama3.1:8b</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row" id="rowBaseUrl">
+            <label for="quickBaseUrl">API Base URL</label>
+            <input type="text" id="quickBaseUrl" class="input-text" placeholder="https://openrouter.ai/api/v1">
+          </div>
+
+          <div class="form-row">
+            <label for="quickApiKey">API Key</label>
+            <div class="input-password-wrap">
+              <input type="password" id="quickApiKey" class="input-text" placeholder="sk-...">
+              <button class="btn-toggle-eye" id="btnToggleKey" type="button" title="Toggle password visibility">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="iconEyeOpen"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="iconEyeClosed" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-status-row">
+            <span class="text-secondary">Target: <code id="quickConfigPath">~/.hermes/config.yaml</code></span>
+            <button class="btn-save-state btn-sm" id="btnApplyModel" disabled>Apply Changes</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Console / Event Logs (Bottom Pane) -->
+    <section class="console-card">
+      <div class="console-header">
+        <div class="console-title">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Event Log & Output Stream
+        </div>
+
+        <div class="console-actions">
+          <label class="checkbox-label" for="chkAutoScroll">
+            <input type="checkbox" id="chkAutoScroll" class="custom-checkbox" checked>
+            <span>Auto-scroll</span>
+          </label>
+          <button class="btn btn-sm btn-outline" id="btnTestApi" title="Send a test message to Hermes RPC Backend">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Test API
+          </button>
+          <button class="btn btn-sm btn-outline" id="btnCopyLog">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+          <button class="btn btn-sm btn-outline" id="btnClearLog">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="console-body" id="consoleBody">
+        <!-- Log lines dynamically appended -->
+      </div>
+    </section>
+
+    <!-- Status Bar (Footer) -->
+    <footer class="footer">
+      <div class="footer-left">
+        <span>Executable:</span>
+        <span class="footer-val" id="footerHermesExe">Checking...</span>
+      </div>
+      <div class="footer-right">
+        <span>Panel Server: <a href="http://127.0.0.1:8640" target="_blank" class="footer-link">http://127.0.0.1:8640</a></span>
+        <span class="footer-sep">|</span>
+        <span>Dashboard: <a href="http://127.0.0.1:9119" target="_blank" class="footer-link">http://127.0.0.1:9119</a></span>
+        <span class="footer-sep">|</span>
+        <span>RPC Backend: <a href="http://127.0.0.1:8642" target="_blank" class="footer-link">http://127.0.0.1:8642</a></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal" id="modalSettings">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">Hermes Global Configuration</div>
+        <button class="modal-close" id="btnCloseSettings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="tab-btn active" data-tab="tabApiKeys">API Keys (.env)</button>
+          <button class="tab-btn" data-tab="tabModelParams">Model Parameters</button>
+          <button class="tab-btn" data-tab="tabIntegrations">Integrations</button>
+        </div>
+
+        <!-- Tab: API Keys -->
+        <div class="tab-content active" id="tabApiKeys">
+          <div class="form-group">
+            <label>OpenRouter API Key</label>
+            <input type="password" id="cfgOpenRouterKey" class="input-text" placeholder="sk-or-v1-...">
+          </div>
+          <div class="form-group">
+            <label>Nous Portal Key</label>
+            <input type="password" id="cfgNousPortalKey" class="input-text" placeholder="np_...">
+          </div>
+          <div class="form-group">
+            <label>OpenAI API Key</label>
+            <input type="password" id="cfgOpenAIKey" class="input-text" placeholder="sk-...">
+          </div>
+          <div class="form-group">
+            <label>Anthropic Claude API Key</label>
+            <input type="password" id="cfgAnthropicKey" class="input-text" placeholder="sk-ant-...">
+          </div>
+          <div class="form-group">
+            <label>Groq API Key</label>
+            <input type="password" id="cfgGroqKey" class="input-text" placeholder="gsk_...">
+          </div>
+          <div class="form-group">
+            <label>DeepSeek API Key</label>
+            <input type="password" id="cfgDeepSeekKey" class="input-text" placeholder="sk-...">
+          </div>
+        </div>
+
+        <!-- Tab: Model Parameters -->
+        <div class="tab-content" id="tabModelParams">
+          <div class="form-group">
+            <label>Temperature (0.0 - 2.0)</label>
+            <input type="number" id="cfgTemperature" class="input-text" step="0.1" min="0" max="2" value="0.7">
+          </div>
+          <div class="form-group">
+            <label>Max Tokens</label>
+            <input type="number" id="cfgMaxTokens" class="input-text" value="4096">
+          </div>
+          <div class="form-group">
+            <label>Backend Port</label>
+            <input type="number" id="cfgGatewayPort" class="input-text" value="8642">
+          </div>
+        </div>
+
+        <!-- Tab: Integrations -->
+        <div class="tab-content" id="tabIntegrations">
+          <div class="form-group">
+            <label>Telegram Bot Token</label>
+            <input type="password" id="cfgTelegramToken" class="input-text" placeholder="123456:ABC-DEF...">
+          </div>
+          <div class="form-group">
+            <label>Discord Bot Token</label>
+            <input type="password" id="cfgDiscordToken" class="input-text" placeholder="MTI3...">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="btnCancelSettings">Cancel</button>
+        <button class="btn btn-primary" id="btnSaveFullSettings">Save Configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Tester Modal -->
+  <div class="modal" id="modalApiTest">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">Hermes RPC Backend API Tester</div>
+        <button class="modal-close" id="btnCloseApiTest">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-secondary" style="margin-bottom: 8px;">Sends a test chat completion request to <code id="apiTesterUrl">http://127.0.0.1:8642/v1/chat/completions</code>.</p>
+        <div class="form-group">
+          <label>Test Prompt</label>
+          <textarea id="txtTestPrompt" class="input-textarea" rows="3">Siapa kamu dan apa fungsi utamamu sebagai AI agent?</textarea>
+        </div>
+        <div class="form-group">
+          <label>Response</label>
+          <div class="api-response-box" id="boxApiResponse">Click "Send Test Request" to query the running Hermes RPC Backend...</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="btnCloseApiTestBtn">Close</button>
+        <button class="btn btn-primary" id="btnSendTestPrompt">Send Test Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Explorer Modal -->
+  <div class="modal" id="modalExplorer">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <div class="modal-title">Open in Windows Explorer</div>
+        <button class="modal-close" id="btnCloseExplorer">&times;</button>
+      </div>
+      <div class="modal-body explorer-list">
+        <button class="explorer-btn" data-target="config">
+          <div class="explorer-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </div>
+          <div>
+            <div class="explorer-name">User Config & Keys</div>
+            <div class="explorer-desc">~/.hermes (config.yaml, .env)</div>
+          </div>
+        </button>
+        <button class="explorer-btn" data-target="hermes">
+          <div class="explorer-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <div>
+            <div class="explorer-name">Hermes Home</div>
+            <div class="explorer-desc">%LOCALAPPDATA%\hermes</div>
+          </div>
+        </button>
+        <button class="explorer-btn" data-target="agent">
+          <div class="explorer-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <div>
+            <div class="explorer-name">Hermes Repository & Venv</div>
+            <div class="explorer-desc">%LOCALAPPDATA%\hermes\hermes-agent</div>
+          </div>
+        </button>
+        <button class="explorer-btn" data-target="logs">
+          <div class="explorer-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          </div>
+          <div>
+            <div class="explorer-name">Control Panel Logs</div>
+            <div class="explorer-desc">hermes-control-panel\logs</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
