@@ -29,3 +29,5 @@ screenshot_*.png
 .idea/
 .DS_Store
 Thumbs.db
+.gateway_recovered_notified
+check_*_status.py

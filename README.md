@@ -50,7 +50,7 @@ Software desktop Control Panel untuk **Hermes Agent** (Nous Research autonomous 
 
 ### Cara 3: Lewat Terminal / Batch File
 ```powershell
-cd "C:\FIKKAN\project\hermes-control-panel"
+cd "C:\path\to\hermes-control-panel"
 .\run.bat
 ```
 
@@ -63,7 +63,7 @@ cd "C:\FIKKAN\project\hermes-control-panel"
 ## 📁 Struktur Direktori
 
 ```
-C:\FIKKAN\project\hermes-control-panel\
+C:\path\to\hermes-control-panel\
 │
 ├── app.py                  # Entry point desktop (WebView2 native window)
 ├── hermes_manager.py       # Core backend controller (Service, PID, Ports, Config)
@@ -79,3 +79,8 @@ C:\FIKKAN\project\hermes-control-panel\
     ├── app.js              # Interaksi frontend & live polling
     └── favicon.ico         # Web favicon
 ```
+
+## Lisensi
+MIT, lihat [LICENSE](LICENSE).
+
+> Proyek independen, tidak berafiliasi dengan Nous Research. Hermes Agent harus diinstal terpisah.
